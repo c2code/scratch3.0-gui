@@ -17,10 +17,11 @@ import ProjectTitleInput from './project-title-input.jsx';
 import AccountNav from '../../containers/account-nav.jsx';
 import LoginDropdown from './login-dropdown.jsx';
 import SB3Downloader from '../../containers/sb3-downloader.jsx';
+import FileToServer from '../../containers/filetoserver.jsx';
 import DeletionRestorer from '../../containers/deletion-restorer.jsx';
 import TurboMode from '../../containers/turbo-mode.jsx';
 
-import {openTipsLibrary} from '../../reducers/modals';
+import {openTipsLibrary, openFilelistLibrary, openMLLibrary} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import {
     getIsUpdating,
@@ -360,6 +361,28 @@ class MenuBar extends React.Component {
                                             />
                                         </MenuItem>
                                     )}</SB3Downloader>
+                                    <FileToServer>{SaveProject => (
+                                        <MenuItem
+                                            onClick={this.handleCloseFileMenuAndThen(SaveProject)}
+                                        >
+                                            <FormattedMessage
+                                                defaultMessage="作品上传至服务器"
+                                                description="Menu bar item for downloading a project to your computer"
+                                                id="gui.menuBar.filetoserver"
+                                            />
+                                        </MenuItem>
+                                    )}</FileToServer>
+                                    <Box className="fileList">
+                                        <MenuItem
+                                            onClick={this.props.ontestExtensionButtonClick}
+                                        >
+                                            <FormattedMessage
+                                                defaultMessage="我的作品列表"
+                                                description="Menu bar item for downloading a project to your computer"
+                                                id="gui.menuBar.getfilelist"
+                                            />
+                                        </MenuItem>
+                                    </Box>
                                 </MenuSection>
                             </MenuBarMenu>
                         </div>
@@ -410,6 +433,20 @@ class MenuBar extends React.Component {
                                     )}</TurboMode>
                                 </MenuSection>
                             </MenuBarMenu>
+                        </div>
+                        <div
+                            className={classNames(styles.menuBarItem, styles.hoverable)}
+                            onClick={this.props.onOpenMLLibrary}
+                        >
+                            <img
+                                className={styles.helpIcon}
+                                src={helpIcon}
+                            />
+                            <FormattedMessage
+                                defaultMessage="Machine Learning"
+                                description="Menu bar item for downloading a project to your computer"
+                                id="gui.menuBar.ML_extensions"
+                            />
                         </div>
                     </div>
                     <Divider className={classNames(styles.divider)} />
@@ -652,6 +689,7 @@ MenuBar.propTypes = {
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onOpenTipLibrary: PropTypes.func,
+    onOpenMLLibrary: PropTypes.func,
     onRequestCloseAccount: PropTypes.func,
     onRequestCloseEdit: PropTypes.func,
     onRequestCloseFile: PropTypes.func,
@@ -661,6 +699,7 @@ MenuBar.propTypes = {
     onShare: PropTypes.func,
     onToggleLoginOpen: PropTypes.func,
     onUpdateProjectTitle: PropTypes.func,
+    ontestExtensionButtonClick: PropTypes.func,
     renderLogin: PropTypes.func,
     sessionExists: PropTypes.bool,
     showComingSoon: PropTypes.bool,
@@ -689,7 +728,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
+    ontestExtensionButtonClick: () => dispatch(openFilelistLibrary()),
     onOpenTipLibrary: () => dispatch(openTipsLibrary()),
+    onOpenMLLibrary: () => dispatch(openMLLibrary()),
     onClickAccount: () => dispatch(openAccountMenu()),
     onRequestCloseAccount: () => dispatch(closeAccountMenu()),
     onClickFile: () => dispatch(openFileMenu()),

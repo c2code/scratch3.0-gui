@@ -7,6 +7,8 @@ const MODAL_BACKDROP_LIBRARY = 'backdropLibrary';
 const MODAL_CAMERA_CAPTURE = 'cameraCapture';
 const MODAL_COSTUME_LIBRARY = 'costumeLibrary';
 const MODAL_EXTENSION_LIBRARY = 'extensionLibrary';
+const MODAL_FILELIST_LIBRARY = 'filelistLibrary';
+const MODAL_ML_LIBRARY = 'machinelearningLibrary';
 const MODAL_IMPORT_INFO = 'importInfo';
 const MODAL_LOADING_PROJECT = 'loadingProject';
 const MODAL_PREVIEW_INFO = 'previewInfo';
@@ -21,6 +23,8 @@ const initialState = {
     [MODAL_CAMERA_CAPTURE]: false,
     [MODAL_COSTUME_LIBRARY]: false,
     [MODAL_EXTENSION_LIBRARY]: false,
+    [MODAL_FILELIST_LIBRARY]: false,
+    [MODAL_ML_LIBRARY]: false,
     [MODAL_IMPORT_INFO]: false,
     [MODAL_LOADING_PROJECT]: false,
     [MODAL_PREVIEW_INFO]: true,
@@ -74,6 +78,16 @@ const openExtensionLibrary = function () {
     analytics.pageview('/libraries/extensions');
     return openModal(MODAL_EXTENSION_LIBRARY);
 };
+const openFilelistLibrary = function () {
+    analytics.pageview('/libraries/filelist');
+    return openModal(MODAL_FILELIST_LIBRARY);
+};
+
+const openMLLibrary = function () {
+    analytics.pageview('/libraries/machinelearning');
+    return openModal(MODAL_ML_LIBRARY);
+}
+
 const openImportInfo = function () {
     analytics.pageview('modals/import');
     return openModal(MODAL_IMPORT_INFO);
@@ -118,6 +132,14 @@ const closeCostumeLibrary = function () {
 const closeExtensionLibrary = function () {
     return closeModal(MODAL_EXTENSION_LIBRARY);
 };
+const closeFilelistLibrary = function () {
+    return closeModal(MODAL_FILELIST_LIBRARY);
+};
+
+const closeMLLibrary = function () {
+    return closeModal(MODAL_ML_LIBRARY);
+};
+
 const closeImportInfo = function () {
     return closeModal(MODAL_IMPORT_INFO);
 };
@@ -149,6 +171,8 @@ export {
     openCameraCapture,
     openCostumeLibrary,
     openExtensionLibrary,
+    openFilelistLibrary,
+    openMLLibrary,
     openImportInfo,
     openLoadingProject,
     openPreviewInfo,
@@ -161,6 +185,8 @@ export {
     closeCameraCapture,
     closeCostumeLibrary,
     closeExtensionLibrary,
+    closeFilelistLibrary,
+    closeMLLibrary,
     closeImportInfo,
     closeLoadingProject,
     closePreviewInfo,

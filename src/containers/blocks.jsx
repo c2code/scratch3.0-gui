@@ -12,6 +12,8 @@ import log from '../lib/log.js';
 import Prompt from './prompt.jsx';
 import BlocksComponent from '../components/blocks/blocks.jsx';
 import ExtensionLibrary from './extension-library.jsx';
+import FileListLib from './file-list-lib.jsx';
+import MachineLearningLibrary from './machine-learning-lib.jsx';
 import extensionData from '../lib/libraries/extensions/index.jsx';
 import CustomProcedures from './custom-procedures.jsx';
 import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
@@ -20,10 +22,12 @@ import {STAGE_DISPLAY_SIZES} from '../lib/layout-constants';
 import {connect} from 'react-redux';
 import {updateToolbox} from '../reducers/toolbox';
 import {activateColorPicker} from '../reducers/color-picker';
-import {closeExtensionLibrary, openSoundRecorder, openConnectionModal} from '../reducers/modals';
+import {closeExtensionLibrary, openSoundRecorder, openConnectionModal, closeMLLibrary} from '../reducers/modals';
+import {closeFilelistLibrary} from '../reducers/modals';
 import {activateCustomProcedures, deactivateCustomProcedures} from '../reducers/custom-procedures';
 import {setConnectionModalExtensionId} from '../reducers/connection-modal';
 
+import {setProjectTitle} from '../reducers/project-title';
 import {
     activateTab,
     SOUNDS_TAB_INDEX
@@ -63,6 +67,7 @@ class Blocks extends React.Component {
             'onVisualReport',
             'onWorkspaceUpdate',
             'onWorkspaceMetricsChange',
+            'handleSetProjectName',
             'setBlocks',
             'setLocale'
         ]);
@@ -364,6 +369,11 @@ class Blocks extends React.Component {
             this.workspace.toolbox_.setSelectedCategoryById(categoryId);
         });
     }
+
+    handleSetProjectName (name) {
+        this.props.onSetProjectTitle(name);
+    }
+
     setBlocks (blocks) {
         this.blocks = blocks;
     }
@@ -410,18 +420,23 @@ class Blocks extends React.Component {
             anyModalVisible,
             customProceduresVisible,
             extensionLibraryVisible,
+            filelistLibraryVisible,
             options,
             stageSize,
             vm,
             isRtl,
             isVisible,
+            machinelearningLibraryVisible,
             onActivateColorPicker,
             onOpenConnectionModal,
             onOpenSoundRecorder,
             updateToolboxState,
             onActivateCustomProcedures,
             onRequestCloseExtensionLibrary,
+            onRequestCloseFilelistLibrary,
+            onRequestCloseMLLibrary,
             onRequestCloseCustomProcedures,
+            onSetProjectTitle,
             toolboxXML,
             ...props
         } = this.props;
@@ -450,6 +465,21 @@ class Blocks extends React.Component {
                         onRequestClose={onRequestCloseExtensionLibrary}
                     />
                 ) : null}
+                {filelistLibraryVisible ? (
+                    <FileListLib
+                        vm={vm}
+                        onCategorySelected={this.handleCategorySelected}
+                        onRequestClose={onRequestCloseFilelistLibrary}
+                        onSetProjectTitle={this.handleSetProjectName}
+                    />
+                ) : null}
+                {machinelearningLibraryVisible ? (
+                    <MachineLearningLibrary
+                        vm={vm}
+                        // onCategorySelected={this.handleCategorySelected}
+                        onRequestClose={onRequestCloseMLLibrary}
+                    />
+                ) : null}
                 {customProceduresVisible ? (
                     <CustomProcedures
                         options={{
@@ -467,15 +497,20 @@ Blocks.propTypes = {
     anyModalVisible: PropTypes.bool,
     customProceduresVisible: PropTypes.bool,
     extensionLibraryVisible: PropTypes.bool,
+    filelistLibraryVisible: PropTypes.bool,
     isRtl: PropTypes.bool,
     isVisible: PropTypes.bool,
     locale: PropTypes.string,
+    machinelearningLibraryVisible: PropTypes.bool,
     messages: PropTypes.objectOf(PropTypes.string),
     onActivateColorPicker: PropTypes.func,
     onActivateCustomProcedures: PropTypes.func,
     onOpenSoundRecorder: PropTypes.func,
     onRequestCloseCustomProcedures: PropTypes.func,
     onRequestCloseExtensionLibrary: PropTypes.func,
+    onRequestCloseFilelistLibrary: PropTypes.func,
+    onRequestCloseMLLibrary: PropTypes.func,
+    onSetProjectTitle: PropTypes.func,
     options: PropTypes.shape({
         media: PropTypes.string,
         zoom: PropTypes.shape({
@@ -543,8 +578,10 @@ const mapStateToProps = state => ({
         state.scratchGui.mode.isFullScreen
     ),
     extensionLibraryVisible: state.scratchGui.modals.extensionLibrary,
+    filelistLibraryVisible: state.scratchGui.modals.filelistLibrary,
     isRtl: state.locales.isRtl,
     locale: state.locales.locale,
+    machinelearningLibraryVisible: state.scratchGui.modals.machinelearningLibrary,
     messages: state.locales.messages,
     toolboxXML: state.scratchGui.toolbox.toolboxXML,
     customProceduresVisible: state.scratchGui.customProcedures.active
@@ -564,9 +601,16 @@ const mapDispatchToProps = dispatch => ({
     onRequestCloseExtensionLibrary: () => {
         dispatch(closeExtensionLibrary());
     },
+    onRequestCloseFilelistLibrary: () => {
+        dispatch(closeFilelistLibrary());
+    },
+    onRequestCloseMLLibrary: () => {
+        dispatch(closeMLLibrary());
+    },
     onRequestCloseCustomProcedures: data => {
         dispatch(deactivateCustomProcedures(data));
     },
+    onSetProjectTitle: title => dispatch(setProjectTitle(title)),
     updateToolboxState: toolboxXML => {
         dispatch(updateToolbox(toolboxXML));
     }
