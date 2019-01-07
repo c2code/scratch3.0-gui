@@ -51,8 +51,8 @@ class FileListLib extends React.Component {
         };
     }
 
-    componentDidMount (){
-        this.props.onSetProjectTitle('1');
+    componentWillMount (){
+        // this.props.onSetProjectTitle('1');
         this.GetProjectFile().then(res => {
             this.setState({data: res});
         });
@@ -96,8 +96,6 @@ class FileListLib extends React.Component {
                         } catch (e) {
                             reject(e);
                         }
-                    } else {
-                        reject(new Error(XHR.statusText));
                     }
                 }
             };
@@ -111,12 +109,12 @@ class FileListLib extends React.Component {
 
     handleItemSelect (item) {
         this.props.onSetProjectTitle(item.name);
-        console.log(item)
+        // console.log(item)
         const url = item.file;
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.responseType = 'blob';
-        const props = this.props
+        const props = this.props;
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
@@ -132,8 +130,8 @@ class FileListLib extends React.Component {
     }
 
     render () {
-        console.log(this.state.data.length);
-        console.log(this.props.testprop);
+        // console.log(this.state.data.length);
+        // console.log(this.props.testprop);
         const extensionLibraryThumbnailData = this.state.data.map(extension => ({
             rawURL: extension.iconURL,
             ...extension

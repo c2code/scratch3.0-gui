@@ -23,15 +23,68 @@ const messages = defineMessages({
     }
 });
 
-class MachineLearningLibrary extends React.PureComponent {
+class MachineLearningLibrary extends React.Component {
     constructor (props) {
         super(props);
         bindAll(this, [
-            'handleItemSelect'
+            'handleItemSelect',
+            'GetMLProjects'
         ]);
+        this.state = {
+            data: []
+        };
     }
+
+    componentWillMount (){
+        // console.log(1);
+        this.GetMLProjects().then(res => {
+            this.setState({data: res});
+        });
+    }
+
+    GetMLProjects(){
+        return new Promise((resolve, reject) => {
+            const XHR = new XMLHttpRequest();
+            const url = 'http://10.103.241.0:8082/getModels/';
+            XHR.open('GET', url, true);
+            XHR.responseType = 'application/json';
+            // XHR.setRequestHeader('token', 'ml');
+            XHR.onreadystatechange = function () {
+                if (XHR.readyState === 4) {
+                    if (XHR.status === 200) {
+                        try{
+                            // console.log(XHR.response)
+                            const data = [];
+                            const res = JSON.parse(XHR.response);
+                            // console.log(res[0].ch_name)
+                            let count = 0;
+                            while (count < res.length){
+                                const tempdata = {
+                                    name: res[count].ch_name,
+                                    iconURL: png1,
+                                    algorithm: res[count].algorithm
+                                }
+                                count++;
+                                data.push(tempdata);
+                            }
+                            // console.log(data)
+                            resolve(data);
+                        }catch (e) {
+                            reject(e);
+                        }
+                    }
+                }
+            }
+            XHR.send();
+        });
+    }
+
     handleItemSelect (item) {
-        console.log(item.name);
+        // console.log(item.name);
+        const id = 'machineLearning';
+        this.props.vm.extensionManager.loadExtensionURL(id,item.name).then(() => {
+            this.props.onCategorySelected(id);
+        });
         // const id = item.extensionId;
         // let url = item.extensionURL ? item.extensionURL : id;
         // if (!item.disabled && !id) {
@@ -42,7 +95,7 @@ class MachineLearningLibrary extends React.PureComponent {
         //     if (this.props.vm.extensionManager.isExtensionLoaded(url)) {
         //         this.props.onCategorySelected(id);
         //     } else {
-        //         this.props.vm.extensionManager.loadExtensionURL(url).then(() => {
+        //         this.props.vm.extensionManager.loadMLExtensions(url).then(() => {
         //             this.props.onCategorySelected(id);
         //         });
         //     }
@@ -61,13 +114,8 @@ class MachineLearningLibrary extends React.PureComponent {
         // });
     }
     render () {
-        const data = [
-            {
-                name: 'test',
-                iconURL: png1
-            }
-        ];
-        const extensionLibraryThumbnailData = data.map(extension => ({
+        // console.log(this.state.data);
+        const extensionLibraryThumbnailData = this.state.data.map(extension => ({
             rawURL: extension.iconURL || extensionIcon,
             ...extension
         }));
@@ -87,7 +135,7 @@ class MachineLearningLibrary extends React.PureComponent {
 
 MachineLearningLibrary.propTypes = {
     intl: intlShape.isRequired,
-    // onCategorySelected: PropTypes.func,
+    onCategorySelected: PropTypes.func,
     onRequestClose: PropTypes.func,
     visible: PropTypes.bool,
     vm: PropTypes.instanceOf(VM).isRequired // eslint-disable-line react/no-unused-prop-types

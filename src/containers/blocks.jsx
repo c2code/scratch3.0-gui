@@ -468,7 +468,7 @@ class Blocks extends React.Component {
                 {filelistLibraryVisible ? (
                     <FileListLib
                         vm={vm}
-                        onCategorySelected={this.handleCategorySelected}
+                        // onCategorySelected={this.handleCategorySelected}
                         onRequestClose={onRequestCloseFilelistLibrary}
                         onSetProjectTitle={this.handleSetProjectName}
                     />
@@ -476,7 +476,7 @@ class Blocks extends React.Component {
                 {machinelearningLibraryVisible ? (
                     <MachineLearningLibrary
                         vm={vm}
-                        // onCategorySelected={this.handleCategorySelected}
+                        onCategorySelected={this.handleCategorySelected}
                         onRequestClose={onRequestCloseMLLibrary}
                     />
                 ) : null}
