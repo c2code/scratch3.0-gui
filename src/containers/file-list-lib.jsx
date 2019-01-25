@@ -62,10 +62,18 @@ class FileListLib extends React.Component {
     GetProjectFile () {
         return new Promise((resolve, reject) => {
             const XHR = new XMLHttpRequest();
-            const url = 'http://127.0.0.1:8000/gui/download/';
+            const url = 'http://test.tuopinpin.com/gui/download/';
             const form = new FormData();
             XHR.open('POST', url, true);
-            form.append('author', 'jyh4');
+            let usernameStr = '';
+            const usernames = document.cookie.split(';');
+            for (let count =0; count < usernames.length; count++){
+                const username = usernames[count].split('=');
+                if(username[0].toString() === 'username' || username[0].toString() === ' username'){
+                    usernameStr = username[1].toString();
+                }
+            }
+            form.append('author', usernameStr);
 
             XHR.onreadystatechange = function () {
                 if (XHR.readyState === 4) {
@@ -99,7 +107,11 @@ class FileListLib extends React.Component {
                     }
                 }
             };
-            XHR.send(form);
+            if (usernameStr === ''){
+                alert('please login');
+            } else {
+                XHR.send(form);
+            }
         });
     }
 
@@ -108,7 +120,8 @@ class FileListLib extends React.Component {
     // }
 
     handleItemSelect (item) {
-        this.props.onSetProjectTitle(item.name);
+        const fileName = item.name.split('.sb3')[0];
+        this.props.onSetProjectTitle(fileName);
         // console.log(item)
         const url = item.file;
         const xhr = new XMLHttpRequest();

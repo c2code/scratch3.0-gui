@@ -37,6 +37,7 @@ class TargetPane extends React.Component {
             'handleDuplicateSprite',
             'handleExportSprite',
             'handleNewSprite',
+            'handleUploadSprite',
             'handleSelectSprite',
             'handleSurpriseSpriteClick',
             'handlePaintSpriteClick',
@@ -112,7 +113,7 @@ class TargetPane extends React.Component {
     }
     handleSurpriseSpriteClick () {
         const item = spriteLibraryContent[Math.floor(Math.random() * spriteLibraryContent.length)];
-        this.props.vm.addSprite(JSON.stringify(item.json))
+        this.props.vm.addSprite(JSON.stringify(item.json),'lib')
             .then(this.handleActivateBlocksTab);
     }
     handlePaintSpriteClick () {
@@ -122,7 +123,7 @@ class TargetPane extends React.Component {
             formatMessage(sharedMessages.pop),
             formatMessage(sharedMessages.costume, {index: 1})
         );
-        this.props.vm.addSprite(JSON.stringify(emptyItem)).then(() => {
+        this.props.vm.addSprite(JSON.stringify(emptyItem),'paint').then(() => {
             setTimeout(() => { // Wait for targets update to propagate before tab switching
                 this.props.onActivateTab(COSTUMES_TAB_INDEX);
             });
@@ -131,8 +132,14 @@ class TargetPane extends React.Component {
     handleActivateBlocksTab () {
         this.props.onActivateTab(BLOCKS_TAB_INDEX);
     }
+
+    handleUploadSprite (spriteJSONString) {
+        this.props.vm.addSprite(spriteJSONString,'upload')
+            .then(this.handleActivateBlocksTab);
+    }
+
     handleNewSprite (spriteJSONString) {
-        this.props.vm.addSprite(spriteJSONString)
+        this.props.vm.addSprite(spriteJSONString,'lib')
             .then(this.handleActivateBlocksTab);
     }
     handleFileUploadClick () {
@@ -142,7 +149,7 @@ class TargetPane extends React.Component {
         const storage = this.props.vm.runtime.storage;
         const costumeSuffix = this.props.intl.formatMessage(sharedMessages.costume, {index: 1});
         handleFileUpload(e.target, (buffer, fileType, fileName) => {
-            spriteUpload(buffer, fileType, fileName, storage, this.handleNewSprite, costumeSuffix);
+            spriteUpload(buffer, fileType, fileName, storage, this.handleUploadSprite, costumeSuffix);
         });
     }
     setFileInput (input) {

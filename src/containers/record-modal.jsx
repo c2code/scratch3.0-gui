@@ -95,7 +95,7 @@ class RecordModal extends React.Component {
                 // if the following is already taken
                 vmSound.name = 'recording1';
 
-                this.props.vm.addSound(vmSound).then(() => {
+                this.props.vm.addSound(vmSound, 'record').then(() => {
                     this.props.onClose();
                     this.props.onNewSound();
                 });

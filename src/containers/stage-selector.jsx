@@ -37,6 +37,8 @@ class StageSelector extends React.Component {
             'handleEmptyBackdrop',
             'addBackdropFromLibraryItem',
             'handleFileUploadClick',
+            'handleUploadBackdrop',
+            'handlePaintBackdrop',
             'handleBackdropUpload',
             'handleMouseEnter',
             'handleMouseLeave',
@@ -59,7 +61,15 @@ class StageSelector extends React.Component {
         this.props.onSelect(this.props.id);
     }
     handleNewBackdrop (backdrop) {
-        this.props.vm.addBackdrop(backdrop.md5, backdrop).then(() =>
+        this.props.vm.addBackdrop(backdrop.md5, backdrop, 'surprise').then(() =>
+            this.props.onActivateTab(COSTUMES_TAB_INDEX));
+    }
+    handleUploadBackdrop (backdrop) {
+        this.props.vm.addBackdrop(backdrop.md5, backdrop, 'upload').then(() =>
+            this.props.onActivateTab(COSTUMES_TAB_INDEX));
+    }
+    handlePaintBackdrop (backdrop) {
+        this.props.vm.addBackdrop(backdrop.md5, backdrop, 'paint').then(() =>
             this.props.onActivateTab(COSTUMES_TAB_INDEX));
     }
     handleSurpriseBackdrop () {
@@ -68,12 +78,12 @@ class StageSelector extends React.Component {
         this.addBackdropFromLibraryItem(item);
     }
     handleEmptyBackdrop () {
-        this.handleNewBackdrop(emptyCostume(this.props.intl.formatMessage(sharedMessages.backdrop, {index: 1})));
+        this.handlePaintBackdrop(emptyCostume(this.props.intl.formatMessage(sharedMessages.backdrop, {index: 1})));
     }
     handleBackdropUpload (e) {
         const storage = this.props.vm.runtime.storage;
         handleFileUpload(e.target, (buffer, fileType, fileName) => {
-            costumeUpload(buffer, fileType, fileName, storage, this.handleNewBackdrop);
+            costumeUpload(buffer, fileType, fileName, storage, this.handleUploadBackdrop);
         });
     }
     handleFileUploadClick () {

@@ -110,7 +110,7 @@ class SoundTab extends React.Component {
             sampleCount: soundItem.sampleCount,
             name: soundItem.name
         };
-        this.props.vm.addSound(vmSound).then(() => {
+        this.props.vm.addSound(vmSound,'surprise').then(() => {
             this.handleNewSound();
         });
     }
@@ -121,7 +121,7 @@ class SoundTab extends React.Component {
 
     handleSoundUpload (e) {
         const storage = this.props.vm.runtime.storage;
-        const handleSound = newSound => this.props.vm.addSound(newSound)
+        const handleSound = newSound => this.props.vm.addSound(newSound, 'upload')
             .then(() => this.handleNewSound());
 
         handleFileUpload(e.target, (buffer, fileType, fileName) => {

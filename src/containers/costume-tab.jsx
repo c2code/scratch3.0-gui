@@ -93,6 +93,9 @@ class CostumeTab extends React.Component {
             'handleFileUploadClick',
             'handleCostumeUpload',
             'handleCameraBuffer',
+            'handleCamCostume',
+            'handleSurCostume',
+            'handleUploadCostume',
             'handleDrop',
             'setFileInput'
         ]);
@@ -151,7 +154,16 @@ class CostumeTab extends React.Component {
         this.props.vm.duplicateCostume(costumeIndex);
     }
     handleNewCostume (costume) {
-        this.props.vm.addCostume(costume.md5, costume);
+        this.props.vm.addCostume(costume.md5, costume, 'paint');
+    }
+    handleCamCostume (costume) {
+        this.props.vm.addCostume(costume.md5, costume, 'camera');
+    }
+    handleSurCostume (costume) {
+        this.props.vm.addCostume(costume.md5, costume, 'surprise');
+    }
+    handleUploadCostume (costume) {
+        this.props.vm.addCostume(costume.md5, costume, 'upload');
     }
     handleNewBlankCostume () {
         const name = this.props.vm.editingTarget.isStage ?
@@ -173,7 +185,7 @@ class CostumeTab extends React.Component {
             bitmapResolution: item.info.length > 2 ? item.info[2] : 1,
             skinId: null
         };
-        this.handleNewCostume(vmCostume);
+        this.handleSurCostume(vmCostume);
     }
     handleSurpriseBackdrop () {
         const item = backdropLibraryContent[Math.floor(Math.random() * backdropLibraryContent.length)];
@@ -185,18 +197,18 @@ class CostumeTab extends React.Component {
             bitmapResolution: item.info.length > 2 ? item.info[2] : 1,
             skinId: null
         };
-        this.handleNewCostume(vmCostume);
+        this.handleSurCostume(vmCostume);
     }
     handleCostumeUpload (e) {
         const storage = this.props.vm.runtime.storage;
         handleFileUpload(e.target, (buffer, fileType, fileName) => {
-            costumeUpload(buffer, fileType, fileName, storage, this.handleNewCostume);
+            costumeUpload(buffer, fileType, fileName, storage, this.handleUploadCostume);
         });
     }
     handleCameraBuffer (buffer) {
         const storage = this.props.vm.runtime.storage;
         const name = this.props.intl.formatMessage(messages.costume, {index: 1});
-        costumeUpload(buffer, 'image/png', name, storage, this.handleNewCostume);
+        costumeUpload(buffer, 'image/png', name, storage, this.handleCamCostume);
     }
     handleFileUploadClick () {
         this.fileInput.click();

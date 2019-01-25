@@ -39,7 +39,7 @@ class FileToServer extends React.Component {
     }
 
     getPicture (props, content){
-        html2canvas(document.getElementsByClassName('stage_stage-wrapper_35Uar box_box_tWy-0')[0])
+        html2canvas(document.getElementsByClassName('stage_stage-wrapper_eRRuk box_box_2jjDp')[0])
             .then(canvas => {
                 const image = new Image();
                 image.src = canvas.toDataURL('image/png');
@@ -57,7 +57,7 @@ class FileToServer extends React.Component {
                     console.log(imgblob.size);
                     // document.body.appendChild(canvas);// 在界面下方生成一个div,展示截取到的作品缩略图
                     const xmlhttp = new XMLHttpRequest();
-                    const url = 'http://127.0.0.1:8000/test/gui/';
+                    const url = 'http://test.tuopinpin.com/test/gui/';
                     const form = new FormData();
                     form.append('image', imgblob, 'image.png');
                     xmlhttp.onreadystatechange = function stateChange (){
@@ -66,16 +66,28 @@ class FileToServer extends React.Component {
                             alert('上传成功');
                         }
                     };
+                    let usernameStr = '';
+                    const usernames = document.cookie.split(';');
+                    for (let count =0; count < usernames.length; count++){
+                        const username = usernames[count].split('=');
+                        if(username[0].toString() === 'username' || username[0].toString() === ' username'){
+                            usernameStr = username[1].toString();
+                        }
+                    }
                     xmlhttp.open('POST', url, true);
                     form.append('file', content);
-                    form.append('author', 'jyh4');
+                    form.append('author', usernameStr);
                     form.append('name', props.projectFilename);
                     form.append('update_time', 'test_0');
                     form.append('create_time', 'test_1');
                     form.append('is_Scratch3', 'true');
                     form.append('format_class', '0');
                     form.append('lesson', 'scratch3_test');
-                    xmlhttp.send(form);
+                    if (usernameStr === ''){
+                        alert ('please login');
+                    } else {
+                        xmlhttp.send(form);
+                    }
                 }
             });
     }

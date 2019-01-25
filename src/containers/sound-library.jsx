@@ -122,7 +122,7 @@ class SoundLibrary extends React.PureComponent {
             sampleCount: soundItem.sampleCount,
             name: soundItem.name
         };
-        this.props.vm.addSound(vmSound).then(() => {
+        this.props.vm.addSound(vmSound, 'lib').then(() => {
             this.props.onNewSound();
         });
         analytics.event({
